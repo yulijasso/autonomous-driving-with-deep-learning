@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+drive_data/
+drive_data.zip
+logs/
+videos/
+.DS_Store
