@@ -335,7 +335,7 @@ def run():
     import argparse
 
     parser = argparse.ArgumentParser("Grade your assignment")
-    parser.add_argument("assignment", default="homework")
+    parser.add_argument("assignment", default="planner")
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-vv", "--very_verbose", action="store_true")
     parser.add_argument("--log_path", default=None)

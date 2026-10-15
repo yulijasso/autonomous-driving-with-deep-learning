@@ -259,9 +259,9 @@ class Evaluator:
 def main():
     """
     Example Usage:
-        python3 -m homework.supertux_utils.evaluate --model mlp_planner --track lighthouse
-        python3 -m homework.supertux_utils.evaluate --model transformer_planner --track snowmountain
-        python3 -m homework.supertux_utils.evaluate --model cnn_planner --track cornfield_crossing
+        python3 -m planner.supertux_utils.evaluate --model mlp_planner --track lighthouse
+        python3 -m planner.supertux_utils.evaluate --model transformer_planner --track snowmountain
+        python3 -m planner.supertux_utils.evaluate --model cnn_planner --track cornfield_crossing
     """
     import argparse
 

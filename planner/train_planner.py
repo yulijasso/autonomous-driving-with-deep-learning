@@ -7,9 +7,9 @@ from datetime import datetime
 from pathlib import Path
 import torch.utils.tensorboard as tb
 from torch.optim import Adam
-from models import MLPPlanner, TransformerPlanner, CNNPlanner, load_model, save_model
-from homework.datasets.road_dataset import load_data
-from metrics import PlannerMetric
+from .models import MLPPlanner, TransformerPlanner, CNNPlanner, load_model, save_model
+from .datasets.road_dataset import load_data
+from .metrics import PlannerMetric
 
 def weighted_l1_loss(pred, target, weight_longitudinal, weight_lateral):
     """
@@ -167,3 +167,16 @@ def train(
     torch.save(model.state_dict(), log_dir / f"{model_name}.th")
     print(f"Model saved to {log_dir / f'{model_name}.th'}")
 
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_name", default="transformer_planner",
+                        choices=["mlp_planner", "transformer_planner", "cnn_planner"])
+    parser.add_argument("--num_epoch", type=int, default=50)
+    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--exp_dir", default="logs")
+    train(**vars(parser.parse_args()))

@@ -14,7 +14,7 @@ I built and compared three approaches:
 
 ## Highlights
 
-- **Three planning architectures, one training pipeline.** I wrote a single training loop in `homework/train_planner.py` that works with any of the models. It picks the right inputs (lane boundaries or images) for each one and logs everything to TensorBoard.
+- **Three planning architectures, one training pipeline.** I wrote a single training loop in `planner/train_planner.py` that works with any of the models. It picks the right inputs (lane boundaries or images) for each one and logs everything to TensorBoard.
 - **Driving straight from pixels.** The CNN planner skips the usual segmentation → depth → reprojection steps. It goes directly from a `96×128` camera frame to future waypoints, so small depth errors don't get blown up during reprojection.
 - **Perceiver-style attention.** The transformer encodes the 20 lane-boundary points with self-attention. Then `n_waypoints` learned query embeddings (`nn.Embedding`) cross-attend over that encoding, following [Perceiver](https://arxiv.org/abs/2103.03206), with the waypoint queries playing the role of the latent array.
 - **Weighted L1 loss.** I wrote a loss that weights longitudinal error (a proxy for speed) separately from lateral error (a proxy for steering). The default is 5:1, which pushes the model harder on speed accuracy.
@@ -62,7 +62,7 @@ The left and right boundaries are concatenated and flattened into a 40-dim vecto
 ## Project Structure
 
 ```
-homework/
+planner/
   models.py           # MLPPlanner, TransformerPlanner, CNNPlanner
   train_planner.py    # Training loop with weighted L1 loss + TensorBoard logging
   metrics.py          # Longitudinal / lateral error metrics
@@ -84,17 +84,17 @@ curl -s -L https://www.cs.utexas.edu/~bzhou/dl_class/drive_data.zip -o ./drive_d
 ### Train
 
 ```bash
-PYTHONPATH=homework:. python3 -c "from train_planner import train; train(model_name='mlp_planner')"
-PYTHONPATH=homework:. python3 -c "from train_planner import train; train(model_name='transformer_planner')"
-PYTHONPATH=homework:. python3 -c "from train_planner import train; train(model_name='cnn_planner')"
+python3 -m planner.train_planner --model_name mlp_planner
+python3 -m planner.train_planner --model_name transformer_planner
+python3 -m planner.train_planner --model_name cnn_planner
 ```
 
-Training logs go to `logs/` (view them with `tensorboard --logdir logs`). Trained weights are saved to `homework/<model_name>.th`.
+Training logs go to `logs/` (view them with `tensorboard --logdir logs`). Trained weights are saved to `planner/<model_name>.th`.
 
 ### Evaluate
 
 ```bash
-python3 -m grader homework -v
+python3 -m grader planner -v
 ```
 
 ### Watch it drive (optional)
@@ -103,7 +103,7 @@ python3 -m grader homework -v
 pip install PySuperTuxKartData
 pip install PySuperTuxKart --index-url=https://www.cs.utexas.edu/~bzhou/dl_class/pystk
 
-python3 -m homework.supertux_utils.evaluate --model cnn_planner --track lighthouse
+python3 -m planner.supertux_utils.evaluate --model cnn_planner --track lighthouse
 ```
 
 ## Tech Stack
