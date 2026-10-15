@@ -2,6 +2,12 @@
 
 Neural planners that drive a kart in [SuperTuxKart](https://supertuxkart.net/). Each model predicts the vehicle's next waypoints in its own coordinate frame, and a simple controller follows those waypoints to steer and set speed in the game.
 
+## Demo
+
+[![MLP planner driving the Lighthouse track in SuperTuxKart](https://img.youtube.com/vi/Deql7Z3c1VE/hqdefault.jpg)](https://youtu.be/Deql7Z3c1VE)
+
+*The MLP planner driving the Lighthouse track on its own. Click to watch on YouTube.*
+
 I built and compared three approaches:
 
 | Model | Input | Architecture |
