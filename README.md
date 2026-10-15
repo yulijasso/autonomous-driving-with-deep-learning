@@ -78,6 +78,7 @@ The left and right boundaries are concatenated and flattened into a 40-dim vecto
 ```
 planner/
   models.py           # MLPPlanner, TransformerPlanner, CNNPlanner
+  *.th                # Pretrained weights for each model
   train_planner.py    # Training loop with weighted L1 loss + TensorBoard logging
   metrics.py          # Longitudinal / lateral error metrics
   datasets/           # Data loading and transforms
@@ -94,6 +95,10 @@ pip install -r requirements.txt
 # Download the dataset
 curl -s -L https://www.cs.utexas.edu/~bzhou/dl_class/drive_data.zip -o ./drive_data.zip && unzip -qo drive_data.zip
 ```
+
+### Pretrained weights
+
+The trained models from the results above are included as `planner/mlp_planner.th`, `planner/transformer_planner.th` and `planner/cnn_planner.th`. You can evaluate them or watch them drive right away, without training. Retraining overwrites these files.
 
 ### Train
 
