@@ -4,9 +4,9 @@ Neural planners that drive a kart in [SuperTuxKart](https://supertuxkart.net/). 
 
 ## Demo
 
-[![MLP planner driving the Lighthouse track in SuperTuxKart](https://img.youtube.com/vi/Deql7Z3c1VE/hqdefault.jpg)](https://youtu.be/Deql7Z3c1VE)
+<img src="assets/mlp_planner_demo.gif" width="720" alt="MLP planner driving the Lighthouse track in SuperTuxKart">
 
-*The MLP planner driving the Lighthouse track on its own. Click to watch on YouTube.*
+*The MLP planner driving the Lighthouse track on its own. Left: the kart's camera. Right: lane boundaries (red/blue) and the model's predicted waypoints (green), with the resulting steering and speed. [Watch the full run on YouTube.](https://youtu.be/Deql7Z3c1VE)*
 
 I built and compared three approaches:
 
@@ -20,6 +20,7 @@ I built and compared three approaches:
 
 ## Highlights
 
+- **Beat every accuracy target.** All three models came in under the required longitudinal and lateral error, earning extra credit on every metric. The image-only CNN cut lateral error to **0.273**, about 40% under its 0.45 target (see [Results](#results)).
 - **Three planning architectures, one training pipeline.** I wrote a single training loop in `planner/train_planner.py` that works with any of the models. It picks the right inputs (lane boundaries or images) for each one and logs everything to TensorBoard.
 - **Driving straight from pixels.** The CNN planner skips the usual segmentation → depth → reprojection steps. It goes directly from a `96×128` camera frame to future waypoints, so small depth errors don't get blown up during reprojection.
 - **Perceiver-style attention.** The transformer encodes the 20 lane-boundary points with self-attention. Then `n_waypoints` learned query embeddings (`nn.Embedding`) cross-attend over that encoding, following [Perceiver](https://arxiv.org/abs/2103.03206), with the waypoint queries playing the role of the latent array.
@@ -41,11 +42,18 @@ Evaluation uses two offline metrics:
 - **Longitudinal error**: absolute error along the forward axis (how well the model predicts speed)
 - **Lateral error**: absolute error along the left/right axis (how well the model predicts steering)
 
-| Model | Longitudinal error target | Lateral error target |
-|---|---|---|
-| MLP Planner | < 0.20 | < 0.60 |
-| Transformer Planner | < 0.20 | < 0.60 |
-| CNN Planner | < 0.30 | < 0.45 |
+
+## Results
+
+Validation-set errors from the trained models (lower is better):
+
+| Model | Input | Longitudinal error | Target | Lateral error | Target |
+|---|---|---|---|---|---|
+| MLP Planner | Lane boundaries | **0.143** | < 0.20 | **0.414** | < 0.60 |
+| Transformer Planner | Lane boundaries | **0.125** | < 0.20 | **0.476** | < 0.60 |
+| CNN Planner | Camera image only | **0.160** | < 0.30 | **0.273** | < 0.45 |
+
+Every model beat both targets and earned the extra-credit marks on all six error metrics. The Transformer had the best longitudinal (speed) accuracy. The CNN had the lowest lateral (steering) error of all three, even though it only sees raw pixels while the other two get perfect lane boundaries.
 
 ## Models
 
